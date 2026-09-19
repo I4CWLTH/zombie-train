@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Last Train - Zombie World</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="hud top-hud">
+      <div>
+        <h1>Last Train</h1>
+        <p id="statusText">Life continues while the world falls apart outside.</p>
+      </div>
+      <div class="stats">
+        <span id="timeLabel">07:00</span>
+        <span id="dayLabel">Day 1</span>
+        <span id="weatherLabel">Clear</span>
+      </div>
+    </header>
+
+    <main id="scene" class="scene morning art-mode">
+      <div id="artWorld" class="art-world" aria-hidden="true">
+        <div class="art-panel art-panel-a"></div>
+        <div class="art-panel art-panel-b"></div>
+      </div>
+      <div class="sky"></div>
+      <div class="sun-moon"></div>
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="rain-layer" id="rainLayer"></div>
+
+      <div class="background far"></div>
+      <div class="background mid"></div>
+      <div class="background near"></div>
+
+      <div id="zombieField" class="zombie-field zombie-back-field"></div>
+
+      <div class="tracks">
+        <div class="track track-a"></div>
+        <div class="track track-b"></div>
+      </div>
+
+      <section class="train" aria-label="Train interior">
+        <img id="trainArt" class="train-art" src="assets/images/interiors/living-car.png" alt="Illustrated train interior" />
+        <div class="train-roof"></div>
+        <div class="car-body">
+          <div class="window window-1"><div class="glass"></div></div>
+          <div class="window window-2"><div class="glass"></div></div>
+          <div class="window window-3"><div class="glass"></div></div>
+
+          <div class="interior-light"></div>
+          <div class="shelf">
+            <div class="book"></div>
+            <div class="radio" id="radioProp"></div>
+            <div class="plant"></div>
+          </div>
+
+          <div class="bed"><div class="blanket"></div></div>
+          <div class="table"><div class="mug"></div></div>
+          <div class="supply-box">SUPPLIES</div>
+
+          <div class="door"><span></span></div>
+        </div>
+
+        <!-- Character is intentionally outside .car-body so illustrated mode can
+             hide the classic car interior without hiding the character with it. -->
+        <div id="girl" class="girl reading" role="img" aria-label="Girl living inside the train">
+          <img id="girlArt" class="girl-art" src="assets/images/character/reading.png" alt="Girl reading" />
+          <div class="hair"></div>
+          <div class="head"></div>
+          <div class="body"></div>
+          <div class="arm arm-left"></div>
+          <div class="arm arm-right"></div>
+          <div class="leg leg-left"></div>
+          <div class="leg leg-right"></div>
+          <div class="prop" id="girlProp">▰</div>
+        </div>
+
+        <div class="window-world-overlay living-windows" aria-hidden="true">
+          <div class="window-view window-view-1"></div>
+          <div class="window-view window-view-2"></div>
+          <div class="window-view window-view-3"></div>
+        </div>
+
+        <div class="window-world-overlay workshop-windows" aria-hidden="true">
+          <div class="window-view window-view-1"></div>
+          <div class="window-view window-view-2"></div>
+          <div class="window-view window-view-3"></div>
+        </div>
+
+        <div class="window-world-overlay engine-windows" aria-hidden="true">
+          <div class="window-view window-view-1"></div>
+          <div class="window-view window-view-2"></div>
+          <div class="window-view window-view-3"></div>
+        </div>
+
+        <div class="steam-stack" aria-hidden="true"><span class="steam-puff puff-1"></span><span class="steam-puff puff-2"></span><span class="steam-puff puff-3"></span><span class="steam-puff puff-4"></span></div>
+        <div class="wheels"><i></i><i></i><i></i><i></i></div>
+      </section>
+
+      <div id="zombieFrontField" class="zombie-field zombie-front-field"></div>
+
+      <div id="sceneFade" class="scene-fade"></div>
+      <div id="eventBanner" class="event-banner hidden"></div>
+    </main>
+
+    <aside class="hud bottom-hud">
+      <div class="activity-card">
+        <strong>Current activity</strong>
+        <span id="activityLabel">Reading</span>
+      </div>
+      <div class="meter-group">
+        <label>Energy <progress id="energyMeter" max="100" value="82"></progress></label>
+        <label>Food <progress id="foodMeter" max="100" value="76"></progress></label>
+        <label>Safety <progress id="safetyMeter" max="100" value="91"></progress></label>
+      </div>
+      <div class="controls">
+        <button id="pauseBtn">Pause</button>
+        <button id="speedBtn">Speed: 1x</button>
+        <button id="eventBtn">Trigger Event</button>
+        <button id="visualBtn">Visuals: Art</button>
+        <button id="carBtn">Car: Living</button>
+        <button id="storyAudioBtn">Start Story Audio</button>
+        <button id="storyPauseBtn" disabled>Pause Story</button>
+        <label class="audio-volume">Audio <input id="audioVolume" type="range" min="0" max="100" value="72" /></label>
+      </div>
+      <div class="audio-status" id="audioStatus" aria-live="polite">
+        <strong id="audioChapter">Story audio ready</strong>
+        <span id="audioDetail">Click Start Story Audio to begin the one-hour journey.</span>
+      </div>
+    </aside>
+  </div>
+
+  <script src="assets/data/story.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/audio.js"></script>
+</body>
+</html>
