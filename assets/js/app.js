@@ -38,6 +38,7 @@ let currentCar = 'living';
 let currentWorld = 'city';
 let activeRoutineName = '';
 let transitionTimer = null;
+let radioEventTimer = null;
 let worldReturnTimer = null;
 let manualCarLockUntil = 0;
 let backgroundSceneIndex = 0;
@@ -49,7 +50,7 @@ const characterArt = {
   standing: 'assets/images/character/standing.png',
   walking: 'assets/images/character/walking.png',
   reading: 'assets/images/character/reading.png',
-  sleeping: 'assets/images/character/sleeping.png',
+  sleeping: 'assets/images/character/sleeping-bunk.png',
   eating: 'assets/images/character/eating.png',
   window: 'assets/images/character/window.png',
   repairing: 'assets/images/character/repairing.png',
@@ -240,6 +241,7 @@ function updateClock() {
 }
 
 function applyRoutine(routine) {
+  clearTimeout(radioEventTimer);
   girl.className = `girl ${routine.cls}`;
   activityLabel.textContent = routine.name;
   girlProp.textContent = routine.prop;
@@ -360,12 +362,13 @@ function triggerEvent(forceType = null) {
       spawnZombie(2 + Math.floor(Math.random() * 3), 0.5);
       break;
     case 'radio':
+      clearTimeout(radioEventTimer);
       applyTrainCar('workshop');
       girl.className = 'girl radioing';
       setCharacterArt('radio');
       activityLabel.textContent = 'Listening to a radio transmission';
       girlProp.textContent = '📻';
-      setTimeout(() => updateRoutine(true), 18000 / speed);
+      radioEventTimer = setTimeout(() => updateRoutine(true), 18000 / speed);
       break;
     case 'impact':
       scene.animate(

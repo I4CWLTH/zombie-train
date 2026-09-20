@@ -122,10 +122,13 @@
         <button id="eventBtn">Trigger Event</button>
         <button id="visualBtn">Visuals: Art</button>
         <button id="carBtn">Car: Living</button>
+        <button id="ambientMusicBtn" aria-pressed="false">Ambient Music: Off</button>
+        <button id="ambientSoundsBtn" aria-pressed="false">Ambient Sounds: Off</button>
         <button id="storyAudioBtn">Start Story Audio</button>
         <button id="storyPauseBtn" disabled>Pause Story</button>
         <label class="audio-volume">Audio <input id="audioVolume" type="range" min="0" max="100" value="72" /></label>
       </div>
+      <p id="ambientStatus" class="ambient-status" role="status">Ambient audio is off. Enable either layer to listen.</p>
       <div class="audio-status" id="audioStatus" aria-live="polite">
         <strong id="audioChapter">Story audio ready</strong>
         <span id="audioDetail">Click Start Story Audio to begin the one-hour journey.</span>
@@ -135,6 +138,7 @@
 
   <script src="assets/data/story.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/ambient.js"></script>
   <script src="assets/js/audio.js"></script>
 </body>
 </html>

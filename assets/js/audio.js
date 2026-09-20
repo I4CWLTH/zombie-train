@@ -136,55 +136,7 @@
     master = ctx.createGain();
     master.gain.value = Number(volumeSlider.value) / 100;
     master.connect(ctx.destination);
-
-    trainGain = ctx.createGain();
-    windGain = ctx.createGain();
-    rainGain = ctx.createGain();
-    coldGain = ctx.createGain();
-    trainGain.gain.value = 0.055;
-    windGain.gain.value = 0.012;
-    rainGain.gain.value = 0;
-    coldGain.gain.value = 0;
-    trainGain.connect(master);
-    windGain.connect(master);
-    rainGain.connect(master);
-    coldGain.connect(master);
-
-    trainOsc1 = ctx.createOscillator();
-    trainOsc1.type = 'sine';
-    trainOsc1.frequency.value = 43;
-    const tg1 = ctx.createGain();
-    tg1.gain.value = 0.42;
-    trainOsc1.connect(tg1).connect(trainGain);
-    trainOsc1.start();
-
-    trainOsc2 = ctx.createOscillator();
-    trainOsc2.type = 'triangle';
-    trainOsc2.frequency.value = 62;
-    const tg2 = ctx.createGain();
-    tg2.gain.value = 0.13;
-    trainOsc2.connect(tg2).connect(trainGain);
-    trainOsc2.start();
-
-    const wind = createNoiseSource('lowpass', 900);
-    windSource = wind.source;
-    wind.output.connect(windGain);
-    windSource.start();
-
-    const rain = createNoiseSource('highpass', 2600);
-    rainSource = rain.source;
-    rain.output.connect(rainGain);
-    rainSource.start();
-
-    const cold = createNoiseSource('bandpass', 1200);
-    coldSource = cold.source;
-    cold.output.connect(coldGain);
-    coldSource.start();
-
-    clackTimer = setInterval(playRailClack, 940);
-    scheduleZombieMoan();
-    scheduleRadio();
-    updateAmbience();
+    // Environmental playback is owned by ambient.js; narration remains independent.
   }
 
   function tone(freq, duration, gainValue, type = 'sine', destination = master) {
@@ -201,49 +153,15 @@
   }
 
   function playRailClack() {
-    if (!storyStarted || storyPaused || !ctx) return;
-    tone(115, 0.055, 0.013, 'triangle');
-    setTimeout(() => tone(92, 0.045, 0.008, 'triangle'), 95);
+    // Environmental layer is controlled exclusively by Ambient Sounds.
   }
 
   function playNoiseBurst(duration = 1.5, gainValue = 0.06) {
-    if (!ctx) return;
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1800;
-    filter.Q.value = 0.7;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(gainValue, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(gainValue, ctx.currentTime + Math.max(0.1, duration - 0.15));
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-    source.connect(filter).connect(gain).connect(master);
-    source.start();
+    // Environmental layer is controlled exclusively by Ambient Sounds.
   }
 
   function playZombieMoan(strength = 1) {
-    if (!ctx || storyPaused) return;
-    const base = 70 + Math.random() * 35;
-    const duration = 1.8 + Math.random() * 2.8;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(base, ctx.currentTime);
-    osc.frequency.linearRampToValueAtTime(base * (0.65 + Math.random() * 0.2), ctx.currentTime + duration);
-    filter.type = 'lowpass';
-    filter.frequency.value = 420;
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.006 * strength, ctx.currentTime + 0.25);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-    osc.connect(filter).connect(gain).connect(master);
-    osc.start();
-    osc.stop(ctx.currentTime + duration + 0.05);
+    // Environmental layer is controlled exclusively by Ambient Sounds.
   }
 
   function scheduleZombieMoan() {
@@ -269,20 +187,10 @@
   }
 
   function updateAmbience() {
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const isNight = sceneEl.classList.contains('bg-night');
-    const isSunset = sceneEl.classList.contains('bg-sunset');
-    const isSunrise = sceneEl.classList.contains('bg-sunrise');
-    const isRaining = weatherLabel?.textContent === 'Rain';
-
-    windGain.gain.setTargetAtTime(isNight ? 0.008 : isSunset ? 0.016 : isSunrise ? 0.014 : 0.011, now, 1.5);
-    coldGain.gain.setTargetAtTime(isNight ? 0.027 : 0.001, now, 1.5);
-    rainGain.gain.setTargetAtTime(isRaining ? 0.032 : 0.0001, now, 1.1);
-    trainGain.gain.setTargetAtTime(0.052, now, 1.0);
+    // Environmental layer is controlled exclusively by Ambient Sounds.
   }
 
-  setInterval(updateAmbience, 1200);
+
 
   function moodSettings(mood) {
     const base = { rate: 0.92, pitch: 1.01 };
@@ -383,29 +291,9 @@
   }
 
   function playRadioInterruption(done) {
-    if (radioActive) return done?.();
-    radioActive = true;
-    try { window.triggerEvent?.('radio'); } catch (_) {}
-    const line = radioLines[Math.floor(Math.random() * radioLines.length)];
-    detailLabel.textContent = 'Radio static breaks through the narration...';
-    playNoiseBurst(1.8, 0.075);
-    setTimeout(() => {
-      speakText(line, {
-        voice: radioVoice,
-        rate: 0.96,
-        pitch: 0.94 + Math.random() * 0.05,
-        volume: 0.72,
-        onend: () => {
-          playNoiseBurst(1.2 + Math.random(), 0.07);
-          setTimeout(() => {
-            radioActive = false;
-            chapterLabel.textContent = story[currentChapter]?.title || 'Story';
-            detailLabel.textContent = `Narrating chapter ${currentChapter + 1} of ${story.length}`;
-            done?.();
-          }, 1300);
-        }
-      });
-    }, 1850);
+    // Never cancel/queue speech synthesis for ambient radio, or force a visual event.
+    window.ZOMBIE_TRAIN_AMBIENT?.requestRadio();
+    done?.();
   }
 
   function finishStory() {
